@@ -1,12 +1,5 @@
 /* 问题1：给定 csv 文件，转换成对象结构，提供测试用例，并补充 typescript 函数签名。
-interface Person {
-  name: string;
-  age: number;
-  parent: Person[];
-  children: Person[];
-}*/
-
-/* 期望返回这样的数据结构
+期望返回这样的数据结构
 [
   {
     name: 'Bob',
@@ -33,14 +26,61 @@ David,60,
 Anna,10,Bob
 `;
 
+/* interface Person {
+  name: string;
+  age: number;
+  parent: { name: string; age: number }[];
+  children: { name: string; age: number }[];
+}*/
+
 const processor = (csv) => {
   // your code
+  const csvArr = csv.split("\n").reduce((prev, curr) => {
+    if (curr !== "") {
+      prev.push(curr.split(","))
+    }
+    return prev
+  }, []);
+  const keys = csvArr[0];
+  const result = [];
+  csvArr.forEach((item, index) => {
+    if (index > 0) {
+      const obj = {};
+      item.forEach((value, vIndex) => {
+        if (["name", "age"].includes(keys[vIndex])) {
+          obj[keys[vIndex]] = value;
+        } else {
+          const target = csvArr.find((val) => {
+            return val[0] === value;
+          })
+          if (target) {
+            obj[keys[vIndex]] = [{name: target[0], age: target[1]}];
+          } else {
+            obj[keys[vIndex]] = [];
+          }
+        }
+        if (vIndex === 0) {
+          const targets = csvArr.filter((val) => {
+            return val[2] === value;
+          })
+          obj.children = targets.map((target) => {
+            return {name: target[0], age: target[1]}
+          });
+        }
+      })
+      result.push(obj);
+    }
+  });
+  return result;
 }
+
+processor(csv);
 
 /* 问题2：为 myCalculator 实现“加减乘除”方法，并支持链式调用。*/
 function myCalculator(init) {
   // your codes here
-  function Test() {}
+  function Test() {
+  }
 
   Test.prototype.plus = function (value) {
     init = init + value;
