@@ -1,4 +1,4 @@
-#### 1. 下载Fetch返回的二进制文件
+### 下载Fetch返回的二进制文件
 
 ```javascript
 const response = await request(url, {
